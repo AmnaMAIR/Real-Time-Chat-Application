@@ -1,0 +1,1621 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #e1e5eb;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    .wa-generic-submodule-drawer {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #fff;
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+}
+
+    /* 📱 MAIN PHONE EMULATOR FRAME CANVAS */
+    .wa-mobile-body {
+        width: 360px;
+        height: 640px;
+        background-color: #ffffff;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+        border-radius: 4px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        user-select: none;
+    }
+
+    /* 🟢 TEAL HEADER INTERFACE STRIP */
+    .wa-mobile-header {
+        background-color: #075E54;
+        color: #ffffff;
+        padding: 14px 16px 4px 16px;
+        position: relative;
+    }
+    .wa-header-top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+    .wa-brand-title {
+        font-size: 1.25rem;
+        font-weight: 500;
+        margin: 0;
+    }
+    .wa-header-icons {
+        display: flex;
+        gap: 20px;
+        font-size: 1.15rem;
+    }
+    .wa-header-icons i { cursor: pointer; }
+
+    /* 🔍 SEARCH BAR PANEL OVERLAY FOR MAIN SCREEN */
+    .wa-main-search-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff;
+        display: none;
+        align-items: center;
+        padding: 0 16px;
+        box-sizing: border-box;
+        z-index: 10;
+    }
+    .wa-main-search-overlay input {
+        border: none;
+        outline: none;
+        width: 100%;
+        font-size: 1rem;
+        padding: 8px;
+        margin-left: 12px;
+    }
+
+    /* NAVIGATION TABS STRUCTURES */
+    .wa-tabs-row {
+        display: flex;
+        align-items: center;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.7);
+    }
+    .wa-tab-item {
+        padding: 10px 0;
+        text-align: center;
+        flex-grow: 1;
+        cursor: pointer;
+        position: relative;
+    }
+    .wa-tab-item.active { color: #ffffff; }
+    .wa-tab-item.active::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background-color: #ffffff;
+    }
+
+    .wa-view-body-content {
+        flex-grow: 1;
+        overflow-y: auto;
+        background-color: #ffffff;
+        position: relative;
+    }
+    .wa-tab-view-panel { display: none; height: 100%; }
+    .wa-tab-view-panel.active-view { display: block; }
+
+    /* 👥 LIST REPOSITORIES THREADS */
+    .wa-list-item-row {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        border-bottom: 1px solid #f2f2f2;
+        cursor: pointer;
+    }
+    .wa-list-item-row:hover { background-color: #fafafa; }
+    
+    .wa-avatar-circle {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background-color: #b3c6cd;
+        margin-right: 14px;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+    .wa-avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+    
+    .wa-item-meta-block { flex-grow: 1; overflow: hidden; }
+    .wa-item-title { font-size: 0.98rem; font-weight: 500; color: #111111; margin: 0; }
+    .wa-item-time-stamp { font-size: 0.72rem; color: #888888; }
+    .wa-meta-top-line { display: flex; justify-content: space-between; align-items: center; }
+    
+    .wa-meta-bottom-line {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2px;
+    }
+    .wa-item-subtext { font-size: 0.85rem; color: #666666; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 85%; }
+    
+    /* 🟢 NEW UNREAD BADGE ELEMENT */
+    .wa-unread-count-badge {
+        background-color: #25D366;
+        color: #ffffff;
+        font-size: 0.72rem;
+        font-weight: 700;
+        min-width: 18px;
+        height: 18px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 4px;
+    }
+
+    /* 💬 CHAT TIMELINE INTERFACE SCREEN SLIDE WINDOW OVERLAY */
+    .wa-chat-window-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #efeae2;
+        background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        transform: translateX(100%);
+        transition: transform 0.22s ease-out;
+    }
+    .wa-chat-window-overlay.open { transform: translateX(0); }
+
+    .wa-chat-header-bar {
+        background-color: #075E54;
+        color: #ffffff;
+        padding: 10px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .wa-chat-header-profile-box { display: flex; align-items: center; gap: 6px; cursor: pointer; flex-grow: 1; }
+    .wa-chat-header-avatar { width: 33px; height: 33px; border-radius: 50%; overflow: hidden; margin-left: 4px; }
+    .wa-chat-header-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .wa-chat-history-scroller {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .wa-encryption-alert-box {
+        background-color: #FEF3C7;
+        border-radius: 6px;
+        padding: 8px 10px;
+        font-size: 0.72rem;
+        color: #4B5563;
+        text-align: center;
+        align-self: center;
+        max-width: 90%;
+        line-height: 1.3;
+    }
+
+    /* MESSAGE BUBBLE & STAR CONTEXT EXTENSION */
+    .wa-msg-bubble {
+        max-width: 82%;
+        padding: 6px 10px;
+        font-size: 0.85rem;
+        color: #000000;
+        box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+        border-radius: 6px;
+        position: relative;
+        cursor: context-menu;
+    }
+    .wa-msg-bubble:active, .wa-msg-bubble:hover { filter: brightness(0.97); }
+    .wa-msg-incoming { background-color: #ffffff; align-self: flex-start; }
+    .wa-msg-outgoing { background-color: #DCF8C6; align-self: flex-end; }
+    
+    .wa-msg-meta-row {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 4px;
+        margin-top: 4px;
+        float: right;
+    }
+    .wa-msg-timestamp { font-size: 0.62rem; color: #777777; }
+    .wa-msg-tick-icon { font-size: 0.75rem; color: #888888; display: flex; align-items: center; }
+    .wa-msg-tick-icon.blue-tick { color: #34B7F1 !important; }
+    .wa-msg-star-indicator { font-size: 0.7rem; color: #e6b800; margin-right: 2px; }
+
+    /* FOOTER INPUT WORKSPACE CONTROLLER STRIPS */
+    .wa-chat-footer-input-row { padding: 6px; display: flex; align-items: center; gap: 6px; position: relative; }
+    .wa-footer-input-bubble {
+        background-color: #ffffff;
+        border-radius: 25px;
+        padding: 6px 14px;
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .wa-footer-input-bubble input { border: none; outline: none; width: 100%; font-size: 0.92rem; }
+    .wa-round-action-btn {
+        width: 38px;
+        height: 38px;
+        background-color: #075E54;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-size: 1.1rem;
+        cursor: pointer;
+        border: none;
+    }
+
+    /* DROPDOWNS BOX ARCHITECTURE */
+    .wa-private-dropdown {
+        position: absolute;
+        background-color: #ffffff;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.22);
+        border-radius: 4px;
+        width: 175px;
+        z-index: 200;
+        display: none;
+        padding: 5px 0;
+    }
+    .wa-private-dropdown-item { padding: 11px 16px; font-size: 0.88rem; color: #222222; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+    .wa-private-dropdown-item:hover { background-color: #f5f5f5; }
+
+    .wa-emoji-drawer-panel {
+        background-color: #f0f2f5;
+        border-top: 1px solid #dddddd;
+        height: 140px;
+        overflow-y: auto;
+        display: none;
+        padding: 10px;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 10px;
+        font-size: 1.5rem;
+        text-align: center;
+    }
+    .wa-emoji-node { cursor: pointer; }
+
+    /* 🎙️ VOICE PLAYER ELEMENTS */
+    .wa-audio-player-node-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 4px 0;
+        min-width: 190px;
+    }
+    .wa-audio-play-trigger-btn { font-size: 1.5rem; color: #075E54; cursor: pointer; }
+    .wa-audio-wave-bar-track { flex-grow: 1; height: 5px; background-color: #cddee2; border-radius: 3px; position: relative; }
+    .wa-audio-wave-fill-progress { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background-color: #128C7E; }
+
+    /* CAMERA DISPLAYS VIEWFINDERS LAYERS */
+    .wa-camera-capture-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #000000;
+        z-index: 400;
+        display: none;
+        flex-direction: column;
+        justify-content: space-between;
+        color: white;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    .wa-camera-viewport-frame {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #111111;
+        position: relative;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    .wa-camera-viewport-frame video { width: 100%; height: 100%; object-fit: cover; }
+    .wa-camera-viewport-frame canvas { display: none; }
+
+    /* PROFILE VIEW DRAWER */
+    .wa-contact-info-drawer-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #f0f2f5;
+        z-index: 250;
+        display: flex;
+        flex-direction: column;
+        transform: translateX(100%);
+        transition: transform 0.23s ease-out;
+    }
+    .wa-contact-info-drawer-overlay.open { transform: translateX(0); }
+    .wa-info-header { background-color: #075E54; color: white; padding: 14px 16px; display: flex; align-items: center; gap: 20px; }
+    .wa-info-hero-card { background: white; padding: 20px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 10px; }
+    .wa-info-large-avatar { width: 100px; height: 100px; border-radius: 50%; overflow: hidden; margin: 0 auto 12px auto; }
+    .wa-info-large-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* 📞 OUTGOING/ACTIVE CALL SCREEN OVERLAY */
+    .wa-call-screen-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #054c44;
+        color: #ffffff;
+        z-index: 500;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 50px 20px;
+        box-sizing: border-box;
+    }
+    .wa-call-avatar { width: 110px; height: 110px; border-radius: 50%; overflow: hidden; border: 3px solid rgba(255,255,255,0.2); margin: 15px 0; position: relative; z-index: 2; }
+    .wa-call-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    
+    /* Active Video Feed Call Render Windows */
+    .wa-call-video-render-engine {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 1;
+        display: none;
+    }
+    .wa-call-pip-local-frame {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 80px;
+        height: 120px;
+        border-radius: 4px;
+        border: 1px solid white;
+        background: #222;
+        z-index: 3;
+        overflow: hidden;
+        display: none;
+    }
+
+    /* 📌 NEW SUB-MODULES INTERFACE OVERLAYS (GENERIC ARCHITECTURE) */
+    .wa-generic-submodule-drawer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #f0f2f5;
+        z-index: 300;
+        display: none;
+        flex-direction: column;
+        transition: transform 0.2s ease-out;
+    }
+
+    /* 🛠️ NEW INTERACTIVE SETTINGS NESTED LAYERS SYSTEM STYLES */
+    .wa-settings-user-profile {
+        display: flex;
+        align-items: center;
+        background: #ffffff;
+        padding: 15px 16px;
+        margin-bottom: 8px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .wa-settings-menu-item {
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 14px 16px;
+        cursor: pointer;
+        border-bottom: 1px solid #f5f5f5;
+    }
+    .wa-settings-menu-item:hover { background-color: #fafafa; }
+    .wa-settings-menu-item i { font-size: 1.25rem; color: #666666; width: 24px; text-align: center; }
+    .wa-settings-menu-text h6 { margin: 0; font-size: 0.92rem; font-weight: 500; color: #111111; }
+    .wa-settings-menu-text small { color: #666666; font-size: 0.78rem; }
+    
+    /* Form Toggles and Custom Component styling inside settings */
+    .wa-switch-control {
+        position: relative;
+        display: inline-block;
+        width: 36px;
+        height: 20px;
+    }
+    .wa-switch-control input { opacity: 0; width: 0; height: 0; }
+    .wa-switch-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-color: #ccc;
+        transition: .2s;
+        border-radius: 20px;
+    }
+    .wa-switch-slider:before {
+        position: absolute;
+        content: "";
+        height: 14px; width: 14px;
+        left: 3px; bottom: 3px;
+        background-color: white;
+        transition: .2s;
+        border-radius: 50%;
+    }
+    input:checked + .wa-switch-slider { background-color: #075E54; }
+    input:checked + .wa-switch-slider:before { transform: translateX(16px); }
+
+    .wa-settings-nested-panel {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: #f0f2f5;
+        z-index: 310;
+        display: none;
+        flex-direction: column;
+    }
+
+ .wa-switch-control {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+}
+/* ... bakaya switch slider css ... */
+
+    .blink-animation { animation: blinker-key 1.2s linear infinite; }
+    @@keyframes blinker-key { 50% { opacity: 0; } }
+</style>
+
+<div class="wa-mobile-body">
+    <div class="wa-mobile-header" id="appMainHeaderBar">
+        <div class="wa-header-top-row">
+            <h5 class="wa-brand-title">WhatsApp</h5>
+            <div class="wa-header-icons">
+                <i class="bi bi-search" onclick="toggleMainScreenSearchBar(true)"></i>
+                <i class="bi bi-three-dots-vertical" onclick="toggleMainDashboardDropdownMenu(event)"></i>
+            </div>
+        </div>
+        <div class="wa-tabs-row">
+            <div class="wa-tab-item active">Chats</div>
+            <div class="wa-tab-item">Status</div>
+            <div class="wa-tab-item">Calls</div>
+        </div>
+
+        <div class="wa-main-search-overlay" id="mainDashboardSearchOverlayContainer">
+            <i class="bi bi-arrow-left fs-4 text-secondary" style="cursor:pointer;" onclick="toggleMainScreenSearchBar(false)"></i>
+            <input type="text" id="mainDashboardSearchInputField" placeholder="Search..." oninput="executeMainSearchFilterPipeline(this.value)">
+        </div>
+
+        <div class="wa-private-dropdown" id="mainDashboardContextDropdown" style="top: 45px; right: 10px;">
+            <div class="wa-private-dropdown-item" onclick="openNewGroupCreationModal()"><i class="bi bi-people-fill text-success"></i> New group</div>
+            <div class="wa-private-dropdown-item" onclick="openNewBroadcastModal()"><i class="bi bi-megaphone-fill text-primary"></i> New broadcast</div>
+            <div class="wa-private-dropdown-item" onclick="launchStarredMessagesGlobalViewer()"><i class="bi bi-star-fill text-warning"></i> Starred messages</div>
+            <div class="wa-private-dropdown-item" onclick="launchWhatsAppWebSimulator()"><i class="bi bi-laptop text-info"></i> WhatsApp Web</div>
+            <div class="wa-private-dropdown-item" onclick="openSettingsViewPanel()"><i class="bi bi-gear-fill text-secondary"></i> Settings</div>
+        </div>
+    </div>
+
+    <div class="wa-view-body-content">
+        <div class="wa-tab-view-panel active-view" id="view-panel-CHATS">
+            <div id="dynamicChatsThreadListTarget"></div>
+        </div>
+    </div>
+
+    <div class="wa-chat-window-overlay" id="activeChatViewOverlayWindow">
+        <div class="wa-chat-header-bar">
+            <div class="wa-chat-header-profile-box" onclick="launchContactMetadataInfoDrawer()">
+                <i class="bi bi-arrow-left fs-4" onclick="event.stopPropagation(); dismissChatConversationOverlay()"></i>
+                <div class="wa-chat-header-avatar"><img src="" id="targetOverlayHeaderPic"></div>
+                <div class="ms-1">
+                    <h6 class="m-0 p-0 fw-normal fs-6" id="targetOverlayHeaderTitle" style="font-size:0.95rem !important;">User</h6>
+                    <small id="targetOverlayHeaderStatusLabel" style="font-size: 0.68rem; opacity: 0.9; display:block;">online</small>
+                </div>
+            </div>
+            <div class="d-flex gap-4 fs-5 align-items-center">
+                <i class="bi bi-camera-video-fill" onclick="triggerOutgoingCallSystem('Video Call')"></i>
+                <i class="bi bi-telephone-fill" onclick="triggerOutgoingCallSystem('Voice Call')"></i>
+                <i class="bi bi-three-dots-vertical" onclick="togglePrivateDropdownMenu(event)"></i>
+            </div>
+        </div>
+
+        <div class="wa-private-dropdown" id="privateChatContextDropdown">
+            <div class="wa-private-dropdown-item" onclick="launchContactMetadataInfoDrawer()"><i class="bi bi-person-bounding-box"></i> View contact</div>
+            <div class="wa-private-dropdown-item" onclick="executeClearChatHistoryEngine()"><i class="bi bi-trash3"></i> Clear chat</div>
+        </div>
+
+        <div class="wa-private-dropdown" id="messageContextStarDropdown" style="width:130px;">
+            <div class="wa-private-dropdown-item" id="starActionDropdownTextBtn" onclick="executeToggleMessageStarTarget()"><i class="bi bi-star-fill text-warning"></i> Star</div>
+        </div>
+
+        <div class="wa-chat-history-scroller" id="overlayChatMessagesScrollArea"></div>
+
+        <div class="wa-chat-footer-input-row">
+            <div class="wa-footer-input-bubble">
+                <i class="bi bi-emoji-smile text-secondary fs-5" style="cursor:pointer;" onclick="toggleEmojiKeyboardPanel()"></i>
+                
+                <input type="text" id="chatInputFieldElement" placeholder="Type a message" oninput="toggleInputActionButtonState(this.value)" onkeydown="if(event.key==='Enter') executeOutputMessagePipeline()">
+                
+                <div class="wa-recording-active-dock" style="display:none; align-items:center; gap:12px; color:#e53935; font-size:0.9rem; flex-grow:1;" id="recordingActiveStateDockNode">
+                    <i class="bi bi-mic-fill blink-animation"></i>
+                    <span id="recordingLiveTimerNode">Recording... 00:00</span>
+                </div>
+
+                <input type="file" id="hiddenNativeAttachmentInputChannel" style="display:none;" onchange="commitUploadedAttachmentFileToStream(this)">
+
+                <i class="bi bi-paperclip text-secondary fs-5" style="cursor:pointer;" onclick="document.getElementById('hiddenNativeAttachmentInputChannel').click()"></i>
+                <i class="bi bi-camera-fill text-secondary fs-5" style="cursor:pointer;" onclick="triggerHardwareCameraOverlay(true)"></i>
+            </div>
+            
+            <button class="wa-round-action-btn" id="footerActionMainButtonModule" onclick="handleFooterActionTriggerClick()">
+                <i class="bi bi-mic-fill" id="footerActionGlyphIcon"></i>
+            </button>
+        </div>
+
+        <div class="wa-emoji-drawer-panel" id="appEmojiTrayContainer">
+            <div class="wa-emoji-node" onclick="appendEmojiToInputField('😀')">😀</div>
+            <div class="wa-emoji-node" onclick="appendEmojiToInputField('😂')">😂</div>
+            <div class="wa-emoji-node" onclick="appendEmojiToInputField('❤️')">❤️</div>
+            <div class="wa-emoji-node" onclick="appendEmojiToInputField('👍')">👍</div>
+            <div class="wa-emoji-node" onclick="appendEmojiToInputField('🔥')">🔥</div>
+            <div class="wa-emoji-node" onclick="appendEmojiToInputField('💯')">💯</div>
+            <div class="wa-emoji-node" onclick="appendEmojiToInputField('💻')">💻</div>
+        </div>
+    </div>
+
+    <div class="wa-camera-capture-overlay" id="appHardwareCameraOverlayLayer">
+        <div class="d-flex justify-content-between align-items-center">
+            <i class="bi bi-x-lg fs-4" style="cursor:pointer;" onclick="triggerHardwareCameraOverlay(false)"></i>
+            <span class="small fw-light">Camera Canvas Frame</span>
+            <i class="bi bi-arrow-repeat fs-4"></i>
+        </div>
+        <div class="wa-camera-viewport-frame">
+            <video id="hardwareLiveVideoElement" autoplay playsinline style="display:none;"></video>
+            <canvas id="hardwareHiddenFrameCanvasAsset"></canvas>
+            <div id="cameraAlternativeFallbackUILabel" class="text-center text-white p-3 position-absolute">
+                <i class="bi bi-camera-fill display-4 d-block mb-2 text-success"></i>
+                <span class="small d-block fw-bold">Live Camera Simulated</span>
+                <small class="text-white-50">Click white shutter button to snap image frame</small>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center align-items-center mb-3">
+            <button class="rounded-circle btn btn-light p-1" style="width:65px; height:65px; border:5px solid #666;" onclick="commitHardwareCapturedPhotoPipeline()"></button>
+        </div>
+    </div>
+
+    <div class="wa-contact-info-drawer-overlay" id="appContactProfileInfoDrawerWindow">
+        <div class="wa-info-header">
+            <i class="bi bi-arrow-left fs-4" style="cursor:pointer;" onclick="dismissContactMetadataInfoDrawer()"></i>
+            <h6 class="m-0 fw-normal">Contact info</h6>
+        </div>
+        <div class="overflow-auto flex-grow-1">
+            <div class="wa-info-hero-card">
+                <div class="wa-info-large-avatar"><img src="" id="targetLargeDrawerProfileAvatarPic"></div>
+                <h4 class="fw-normal m-0 text-dark" id="targetLargeDrawerProfileTitleLabel">User</h4>
+                <p class="text-muted small m-0 mt-1" id="targetLargeDrawerPhoneStringNode">+92 300 1234567</p>
+            </div>
+            <div class="bg-white p-3 shadow-sm mb-2" style="font-size:0.9rem;">
+                <span class="text-success small d-block fw-bold mb-1">Custom Status</span>
+                <span class="text-dark">Hey there! I am using WhatsApp application.</span>
+            </div>
+            <div class="bg-white p-3 shadow-sm" style="font-size:0.9rem; color:#d32f2f; cursor:pointer; font-weight:500;" onclick="executeClearChatHistoryEngine(); dismissContactMetadataInfoDrawer();">
+                <i class="bi bi-trash3-fill me-2"></i> Clear Chat History logs
+            </div>
+        </div>
+    </div>
+
+    <div id="submoduleStatusDrawer" class="wa-generic-submodule-drawer" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:white; z-index:9999; flex-direction:column;">
+    <div class="wa-mobile-header" style="background:#075E54; color:white; padding:15px; display:flex; align-items:center;">
+        <i class="bi bi-arrow-left" onclick="document.getElementById('submoduleStatusDrawer').style.display='none'"></i>
+        <h6 class="m-0 ms-3">Status</h6>
+    </div>
+    <div class="p-3"><input type="text" id="statusInput" class="form-control" placeholder="What's on your mind?"><button class="btn btn-success w-100 mt-2" onclick="postStatus()">Post Status</button></div>
+    <div id="statusList" class="p-3"></div>
+</div>
+
+<div id="submoduleNewChatDrawer" class="wa-generic-submodule-drawer" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:white; z-index:9999; flex-direction:column;">
+    <div class="wa-mobile-header" style="background:#075E54; color:white; padding:15px; display:flex; align-items:center;">
+        <i class="bi bi-arrow-left" onclick="document.getElementById('submoduleNewChatDrawer').style.display='none'"></i>
+        <h6 class="m-0 ms-3">New Chat</h6>
+    </div>
+    <div class="p-3">
+        <input type="text" id="newName" class="form-control mb-2" placeholder="Contact Name">
+        <input type="text" id="newPhone" class="form-control mb-2" placeholder="Phone Number">
+        <button class="btn btn-success w-100" onclick="addNewContact()">Create Chat</button>
+    </div>
+</div>
+
+
+    <div class="wa-call-screen-overlay" id="appActiveCallOverlayScreen">
+        <video id="appCallRemoteVideoTrack" class="wa-call-video-render-engine" autoplay playsinline></video>
+        <div id="appCallLocalPipFrame" class="wa-call-pip-local-frame">
+            <video id="appCallLocalVideoTrack" style="width:100%; height:100%; object-fit:cover;" autoplay playsinline></video>
+        </div>
+        <div class="text-center" style="position:relative; z-index:2;">
+            <small class="text-uppercase tracking-wider opacity-75 d-block mb-2" id="callScreenTypeNameLabel" style="font-size:0.75rem; letter-spacing: 1px;">WhatsApp Call</small>
+            <h4 class="fw-normal m-0 fs-3" id="callScreenProfileNameTarget">Contact Name</h4>
+            <span class="small opacity-75 d-block mt-2 blink-animation" id="callDurationTickerString">Ringing...</span>
+        </div>
+        <div class="wa-call-avatar" id="callScreenAvatarCentralBox"><img src="" id="callScreenProfilePicTarget"></div>
+        <div class="mb-4" style="position:relative; z-index:2;">
+            <button class="btn btn-danger rounded-circle p-3" style="width: 55px; height: 55px; display: flex; align-items: center; justify-content: center;" onclick="terminateActiveCallSessionPipeline()">
+                <i class="bi bi-telephone-x-fill fs-4"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="wa-generic-submodule-drawer" id="submoduleNewGroupDrawer">
+        <div class="wa-info-header">
+            <i class="bi bi-arrow-left fs-4" style="cursor:pointer;" onclick="closeGenericSubmoduleView('submoduleNewGroupDrawer')"></i>
+            <h6 class="m-0 fw-normal">New Group Setup</h6>
+        </div>
+        <div class="p-3 bg-white shadow-sm d-flex flex-column gap-2">
+            <label class="small text-success fw-bold">Provide Group Name</label>
+            <input type="text" id="newGroupTitleInputField" class="form-control form-control-sm" placeholder="e.g. Core Tech Devs 👥">
+        </div>
+        <div class="p-3 flex-grow-1 overflow-auto">
+            <span class="text-muted small d-block mb-2 fw-bold">Select Participants:</span>
+            <div id="groupTargetContactsCheckboxList"></div>
+        </div>
+        <div class="p-2 bg-light text-center border-top">
+            <button class="btn btn-success btn-sm w-70 rounded-pill px-4" onclick="executeCommitNewGroupCreationLogic()">Create Active Group</button>
+        </div>
+    </div>
+
+    <div class="wa-generic-submodule-drawer" id="submoduleNewBroadcastDrawer">
+        <div class="wa-info-header">
+            <i class="bi bi-arrow-left fs-4" style="cursor:pointer;" onclick="closeGenericSubmoduleView('submoduleNewBroadcastDrawer')"></i>
+            <h6 class="m-0 fw-normal">New Broadcast List</h6>
+        </div>
+        <div class="p-4 text-center text-muted flex-grow-1 bg-white">
+            <i class="bi bi-megaphone display-3 text-primary d-block mb-3"></i>
+            <h6>Broadcast System Active</h6>
+            <p class="small">Messages sent to broadcast channel will be distributed to all listed entities individually.</p>
+            <button class="btn btn-primary btn-sm rounded-pill mt-2" onclick="alert('Broadcast stream channels instantiated successfully.')">Provision Channel</button>
+        </div>
+    </div>
+
+    <div class="wa-generic-submodule-drawer" id="submoduleStarredMessagesDrawer">
+        <div class="wa-info-header">
+            <i class="bi bi-arrow-left fs-4" style="cursor:pointer;" onclick="closeGenericSubmoduleView('submoduleStarredMessagesDrawer')"></i>
+            <h6 class="m-0 fw-normal">Starred Messages</h6>
+        </div>
+        <div class="flex-grow-1 overflow-auto p-2" id="starredMessagesConsolidatedTargetArea" style="background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');">
+            </div>
+    </div>
+
+    <div class="wa-generic-submodule-drawer" id="submoduleWhatsAppWebDrawer">
+        <div class="wa-info-header">
+            <i class="bi bi-arrow-left fs-4" style="cursor:pointer;" onclick="closeGenericSubmoduleView('submoduleWhatsAppWebDrawer')"></i>
+            <h6 class="m-0 fw-normal">WhatsApp Web Links</h6>
+        </div>
+        <div class="p-4 text-center bg-white m-3 rounded shadow-sm">
+            <i class="bi bi-laptop display-4 text-info mb-2 d-block"></i>
+            <h6>Active Device Logins</h6>
+            <hr>
+            <div class="d-flex align-items-center justify-content-between text-start p-2 border rounded bg-light mb-2">
+                <div>
+                    <small class="d-block fw-bold">Google Chrome (Windows)</small>
+                    <small class="text-muted text-uppercase" style="font-size:0.65rem;">Last active: Today 08:32pm</small>
+                </div>
+                <span class="badge bg-success">Linked</span>
+            </div>
+            <button class="btn btn-sm btn-outline-danger w-100 mt-2" onclick="alert('All browser session cookies invalidated.')">Log out from all devices</button>
+        </div>
+    </div>
+
+   <div class="wa-generic-submodule-drawer" id="submoduleSettingsViewDrawer" style="display:none; overflow-y:auto; background:#f0f2f5;">
+    <div class="wa-info-header" style="background:#075E54; color:white; padding:15px; display:flex; align-items:center;">
+        <i class="bi bi-arrow-left fs-4" style="cursor:pointer;" onclick="closeGenericSubmoduleView('submoduleSettingsViewDrawer')"></i>
+        <h6 class="m-0 ms-3">Settings</h6>
+    </div>
+    
+    <div class="bg-white">
+        <div class="p-3 d-flex align-items-center" onclick="openNestedSettingsPanel('settingsPanelAccount')">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" style="width:50px; height:50px; border-radius:50%;">
+            <div class="ms-3">
+                <h6 class="m-0">Developer (You)</h6>
+                <small class="text-muted">Available</small>
+            </div>
+        </div>
+        <hr class="m-0">
+        <div class="wa-settings-menu-item" onclick="openNestedSettingsPanel('settingsPanelAccount')"><i class="bi bi-key-fill"></i> <div><h6>Account</h6><small>Security notifications, change number</small></div></div>
+        <div class="wa-settings-menu-item" onclick="openNestedSettingsPanel('settingsPanelPrivacy')"><i class="bi bi-lock-fill"></i> <div><h6>Privacy</h6><small>Block contacts, disappearing messages</small></div></div>
+        <div class="wa-settings-menu-item" onclick="openNestedSettingsPanel('settingsPanelChats')"><i class="bi bi-chat-left-dots-fill"></i> <div><h6>Chats</h6><small>Theme, wallpapers, chat history</small></div></div>
+        <div class="wa-settings-menu-item" onclick="openNestedSettingsPanel('settingsPanelNotifications')"><i class="bi bi-bell-fill"></i> <div><h6>Notifications</h6><small>Message, group & call tones</small></div></div>
+        <div class="wa-settings-menu-item" onclick="openNestedSettingsPanel('settingsPanelStorage')"><i class="bi bi-database-fill"></i> <div><h6>Storage and Data</h6><small>Network usage, auto-download</small></div></div>
+        <div class="wa-settings-menu-item" onclick="openNestedSettingsPanel('settingsPanelHelp')"><i class="bi bi-question-circle-fill"></i> <div><h6>Help</h6><small>Help center, contact us, privacy policy</small></div></div>
+        <div class="wa-settings-menu-item" onclick="alert('Invite link generated!')"><i class="bi bi-people-fill"></i> <div><h6>Invite a friend</h6></div></div>
+    </div>
+
+    <div class="wa-settings-nested-panel" id="settingsPanelAccount">
+        <div class="wa-info-header"><i class="bi bi-arrow-left" onclick="closeNestedSettingsPanel('settingsPanelAccount')"></i> <h6 class="m-0 ms-3">Account</h6></div>
+        <div class="list-group list-group-flush">
+            <div class="list-group-item">Security Notifications <input type="checkbox" class="float-end"></div>
+            <div class="list-group-item">Two-Step Verification</div>
+            <div class="list-group-item">Change Number</div>
+            <div class="list-group-item text-danger">Delete My Account</div>
+        </div>
+    </div>
+
+    <div class="wa-settings-nested-panel" id="settingsPanelPrivacy">
+        <div class="wa-info-header"><i class="bi bi-arrow-left" onclick="closeNestedSettingsPanel('settingsPanelPrivacy')"></i> <h6 class="m-0 ms-3">Privacy</h6></div>
+        <div class="list-group list-group-flush">
+            <div class="list-group-item">Last Seen <small class="float-end text-muted">Everyone</small></div>
+            <div class="list-group-item">Profile Photo <small class="float-end text-muted">My Contacts</small></div>
+            <div class="list-group-item">Read Receipts <input type="checkbox" checked class="float-end"></div>
+            <div class="list-group-item">Groups <small class="float-end text-muted">Everyone</small></div>
+        </div>
+    </div>
+
+    <div class="wa-settings-nested-panel" id="settingsPanelChats">
+        <div class="wa-info-header"><i class="bi bi-arrow-left" onclick="closeNestedSettingsPanel('settingsPanelChats')"></i> <h6 class="m-0 ms-3">Chats</h6></div>
+        <div class="list-group list-group-flush">
+            <div class="list-group-item">Theme <small class="float-end text-muted">System Default</small></div>
+            <div class="list-group-item">Wallpaper</div>
+            <div class="list-group-item">Enter is send <input type="checkbox" class="float-end"></div>
+            <div class="list-group-item">Chat Backup</div>
+        </div>
+    </div>
+
+    <div class="wa-settings-nested-panel" id="settingsPanelStorage">
+        <div class="wa-info-header"><i class="bi bi-arrow-left" onclick="closeNestedSettingsPanel('settingsPanelStorage')"></i> <h6 class="m-0 ms-3">Storage and Data</h6></div>
+        <div class="list-group list-group-flush">
+            <div class="list-group-item">Manage Storage <small class="d-block text-muted">140 MB</small></div>
+            <div class="list-group-item">Network Usage</div>
+            <div class="list-group-item">Use less data for calls <input type="checkbox" class="float-end"></div>
+        </div>
+    </div>
+
+
+</div>
+@section Scripts {
+    <script>
+        // ==========================================
+        // 💾 STATE PERSISTENCE RUNTIME MEMORY
+        // ==========================================
+        const targetGlobalContactsArray = [
+            { id: "p1", name: "Programmer", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100", phone: "+92 321 4567891", phrase: "Hi, Developer, how are you?", time: "12:15 pm", unreadCount: 0, stream: [] },
+            { id: "p2", name: "Zeeshan Bro", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100", phone: "+92 333 9876543", phrase: "Assignment files forward krdo please.", time: "11:40 am", unreadCount: 0, stream: [] },
+            { id: "p3", name: "Ayesha University", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100", phone: "+92 345 5551234", phrase: "Project design is approved.", time: "Yesterday", unreadCount: 0, stream: [] },
+            { id: "p4", name: "CS Lab Group 👥", img: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=100", phone: "Group Chat - 12 participants", phrase: "Evaluation tomorrow at 9am.", time: "Yesterday", unreadCount: 0, stream: [] }
+        ];
+
+        let compiledActiveContactIndexId = 0;
+        let isChatWindowOpen = false;
+        let isRecordingModeActive = false;
+        let recordingTimerIntervalObject = null;
+        let recordingSecondsCounter = 0;
+        
+        let activeCallTimerIntervalObject = null;
+        let callSecondsCounter = 0;
+        
+        let typingSimulatorTimeoutObject = null;
+        let replySimulatorTimeoutObject = null;
+        
+        let audioContextEngineReference = null;
+        let cameraStreamObjectReference = null;
+        let callingStreamObjectReference = null;
+
+        // Context trackers for active target message bubble operation
+        let activeTrackedMessageTargetIndex = null;
+
+        document.addEventListener("DOMContentLoaded", function() {
+            targetGlobalContactsArray[0].stream = [
+                { text: "Hi, Developer, How are you?", time: "12:15 pm", isMe: false, isStarred: false },
+                { text: "Hi, Programmer, I am fine and well.", time: "12:16 pm", isMe: true, tickState: 3, isStarred: false }
+            ];
+            targetGlobalContactsArray[1].stream = [{ text: "Assalam o Alaikum bro, free ho?", time: "10:00 am", isMe: false, isStarred: false }];
+            targetGlobalContactsArray[2].stream = [{ text: "Please share UI submission link details.", time: "Yesterday", isMe: false, isStarred: false }];
+            targetGlobalContactsArray[3].stream = [{ text: "Lab tasks evaluation has been initiated inside room 403.", time: "Yesterday", isMe: false, isStarred: false }];
+
+            renderMobileChatsListEngine(targetGlobalContactsArray);
+
+            window.addEventListener('click', function(e) {
+                const privateDrop = document.getElementById("privateChatContextDropdown");
+                const mainDrop = document.getElementById("mainDashboardContextDropdown");
+                const starDrop = document.getElementById("messageContextStarDropdown");
+                
+                if (privateDrop && !e.target.matches('.bi-three-dots-vertical')) privateDrop.style.display = 'none';
+                if (mainDrop && !e.target.matches('.bi-three-dots-vertical')) mainDrop.style.display = 'none';
+                if (starDrop) starDrop.style.display = 'none';
+            });
+        });
+
+        // ==========================================
+        // 🔍 MAIN SCREEN SEARCH & RENDER PIPELINES
+        // ==========================================
+        function renderMobileChatsListEngine(datasourceArray) {
+            const listTarget = document.getElementById("dynamicChatsThreadListTarget");
+            listTarget.innerHTML = "";
+            
+            datasourceArray.forEach((item) => {
+                const globalIndex = targetGlobalContactsArray.findIndex(x => x.id === item.id);
+                
+                let currentLastPhraseText = item.phrase;
+                if(item.stream.length > 0) {
+                    let lastNode = item.stream[item.stream.length - 1];
+                    if (lastNode.text.includes("<img")) currentLastPhraseText = "📷 Photo Attachment";
+                    else if (lastNode.text.includes("audio-player")) currentLastPhraseText = "🎵 Voice Message File";
+                    else if (lastNode.text.includes("bi-file-earmark")) currentLastPhraseText = "📄 Document File Packet";
+                    else currentLastPhraseText = lastNode.text;
+                }
+
+                const badgeMarkup = (item.unreadCount > 0) ? `<span class="wa-unread-count-badge">${item.unreadCount}</span>` : "";
+
+                const markupNodeRow = `
+                    <div class="wa-list-item-row" onclick="loadActiveContactConversationOverlay(${globalIndex})">
+                        <div class="wa-avatar-circle"><img src="${item.img}"></div>
+                        <div class="wa-item-meta-block">
+                            <div class="wa-meta-top-line">
+                                <h6 class="wa-item-title">${item.name}</h6>
+                                <span class="wa-item-time-stamp" style="${item.unreadCount > 0 ? 'color:#25D366; font-weight:bold;' : ''}">${item.time}</span>
+                            </div>
+                            <div class="wa-meta-bottom-line">
+                                <p class="wa-item-subtext">${currentLastPhraseText}</p>
+                                ${badgeMarkup}
+                            </div>
+                        </div>
+                    </div>`;
+                listTarget.insertAdjacentHTML('beforeend', markupNodeRow);
+            });
+        }
+
+        function toggleMainScreenSearchBar(openFlag) {
+            const container = document.getElementById("mainDashboardSearchOverlayContainer");
+            const inputField = document.getElementById("mainDashboardSearchInputField");
+            if(openFlag) {
+                container.style.display = "flex";
+                inputField.focus();
+            } else {
+                container.style.display = "none";
+                inputField.value = "";
+                renderMobileChatsListEngine(targetGlobalContactsArray);
+            }
+        }
+
+        function executeMainSearchFilterPipeline(searchQueryString) {
+            const filtered = targetGlobalContactsArray.filter(contact => 
+                contact.name.toLowerCase().includes(searchQueryString.toLowerCase()) ||
+                contact.phrase.toLowerCase().includes(searchQueryString.toLowerCase())
+            );
+            renderMobileChatsListEngine(filtered);
+        }
+
+        function toggleMainDashboardDropdownMenu(event) {
+            event.stopPropagation();
+            const el = document.getElementById("mainDashboardContextDropdown");
+            el.style.display = (el.style.display === "block") ? "none" : "block";
+        }
+
+        // ==========================================
+        // 💬 CONVERSATION VIEW CONTROLLERS (SAFE & UNTOUCHED)
+        // ==========================================
+        function loadActiveContactConversationOverlay(contactIndex) {
+            compiledActiveContactIndexId = contactIndex;
+            isChatWindowOpen = true;
+            const targetContactNode = targetGlobalContactsArray[contactIndex];
+
+            targetContactNode.unreadCount = 0;
+
+            document.getElementById("targetOverlayHeaderTitle").innerText = targetContactNode.name;
+            document.getElementById("targetOverlayHeaderPic").src = targetContactNode.img;
+            document.getElementById("chatInputFieldElement").value = "";
+            toggleInputActionButtonState("");
+
+            clearActiveTypingTimeouts();
+
+            document.getElementById("targetOverlayHeaderStatusLabel").innerText = "online";
+            document.getElementById("targetOverlayHeaderStatusLabel").style.color = "#ffffff";
+            
+            rebuildCurrentChatHistoryCanvasWall();
+            document.getElementById("activeChatViewOverlayWindow").classList.add("open");
+        }
+
+        function clearActiveTypingTimeouts() {
+            if(typingSimulatorTimeoutObject) { clearTimeout(typingSimulatorTimeoutObject); typingSimulatorTimeoutObject = null; }
+            if(replySimulatorTimeoutObject) { clearTimeout(replySimulatorTimeoutObject); replySimulatorTimeoutObject = null; }
+        }
+
+        function rebuildCurrentChatHistoryCanvasWall() {
+            const container = document.getElementById("overlayChatMessagesScrollArea");
+            container.innerHTML = `
+                <div class="wa-encryption-alert-box">
+                    Messages and calls are end-to-end encrypted. No one outside of this chat can read or listen.
+                </div>`;
+
+            const currentActiveStream = targetGlobalContactsArray[compiledActiveContactIndexId].stream;
+            currentActiveStream.forEach((node, idx) => {
+                let tickMarkup = "";
+                if(node.isMe) {
+                    if(node.tickState === 1) tickMarkup = `<i class="bi bi-check wa-msg-tick-icon"></i>`;
+                    else if(node.tickState === 2) tickMarkup = `<i class="bi bi-check-all wa-msg-tick-icon"></i>`;
+                    else if(node.tickState === 3) tickMarkup = `<i class="bi bi-check-all wa-msg-tick-icon blue-tick"></i>`;
+                }
+
+                const starIconMarkup = node.isStarred ? `<i class="bi bi-star-fill wa-msg-star-indicator"></i>` : "";
+
+                // Click action bound on bubble context wrapper for interactive star tracking triggers
+                const elementMarkup = `
+                    <div class="wa-msg-bubble ${node.isMe ? 'wa-msg-outgoing' : 'wa-msg-incoming'}" onclick="triggerMessageActionPopDropdown(event, ${idx})">
+                        <div>${node.text}</div>
+                        <div class="wa-msg-meta-row">
+                            ${starIconMarkup}
+                            <span class="wa-msg-timestamp">${node.time}</span>
+                            ${tickMarkup}
+                        </div>
+                        <div style="clear:both;"></div>
+                    </div>`;
+                container.insertAdjacentHTML('beforeend', elementMarkup);
+            });
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function dismissChatConversationOverlay() {
+            clearActiveTypingTimeouts();
+            isChatWindowOpen = false;
+            document.getElementById("activeChatViewOverlayWindow").classList.remove("open");
+            document.getElementById("appEmojiTrayContainer").style.display = "none";
+            renderMobileChatsListEngine(targetGlobalContactsArray);
+        }
+
+        function toggleInputActionButtonState(textValueString) {
+            const glyphIcon = document.getElementById("footerActionGlyphIcon");
+            if (textValueString.trim().length > 0) {
+                glyphIcon.className = "bi bi-send-fill text-white";
+            } else {
+                glyphIcon.className = "bi bi-mic-fill text-white";
+            }
+        }
+
+        function handleFooterActionTriggerClick() {
+            const textInput = document.getElementById("chatInputFieldElement");
+            if (textInput.value.trim().length > 0) {
+                executeOutputMessagePipeline();
+            } else {
+                toggleVoiceMessageRecordingSession();
+            }
+        }
+
+        // ==========================================
+        // 💬 CONTROLLED ENGINE PIPELINE RESPONSES
+        // ==========================================
+        function executeOutputMessagePipeline() {
+            const inputField = document.getElementById("chatInputFieldElement");
+            const payload = inputField.value.trim();
+            if(!payload) return;
+
+            const currentTimeStamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }).toLowerCase();
+            const streamRef = targetGlobalContactsArray[compiledActiveContactIndexId].stream;
+            const targetIndexPointer = streamRef.length;
+            
+            streamRef.push({ text: payload, time: currentTimeStamp, isMe: true, tickState: 1, isStarred: false });
+            rebuildCurrentChatHistoryCanvasWall();
+            
+            inputField.value = "";
+            toggleInputActionButtonState("");
+
+            clearActiveTypingTimeouts();
+
+            setTimeout(() => { if(streamRef[targetIndexPointer]) { streamRef[targetIndexPointer].tickState = 2; rebuildCurrentChatHistoryCanvasWall(); } }, 800);
+            setTimeout(() => {
+                if(streamRef[targetIndexPointer]) { streamRef[targetIndexPointer].tickState = 3; rebuildCurrentChatHistoryCanvasWall(); }
+                triggerControlledSingleResponse();
+            }, 1800);
+        }
+
+        function triggerControlledSingleResponse() {
+            const statusLabel = document.getElementById("targetOverlayHeaderStatusLabel");
+            const capturingTargetIndex = compiledActiveContactIndexId;
+
+            typingSimulatorTimeoutObject = setTimeout(() => {
+                if(isChatWindowOpen && compiledActiveContactIndexId === capturingTargetIndex) {
+                    statusLabel.innerText = "typing...";
+                    statusLabel.style.color = "#00e676"; 
+                }
+
+                replySimulatorTimeoutObject = setTimeout(() => {
+                    if(isChatWindowOpen && compiledActiveContactIndexId === capturingTargetIndex) {
+                        statusLabel.innerText = "online";
+                        statusLabel.style.color = "#ffffff";
+                    }
+
+                    const replyPoolArray = [
+                        "Perfect! Muje file parameters mil gaye hain.",
+                        "Okay, looks good. Main iska deployment check krta hoon.",
+                        "Ji bilkul sahi code chal rha hai.",
+                        "Acha, let me evaluate this design structure."
+                    ];
+
+                    const randomReplyText = replyPoolArray[Math.floor(Math.random() * replyPoolArray.length)];
+                    const stamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }).toLowerCase();
+                    
+                    targetGlobalContactsArray[capturingTargetIndex].stream.push({ text: randomReplyText, time: stamp, isMe: false, isStarred: false });
+                    function addNewContact() {
+    const name = document.getElementById('newContactName').value;
+    const phone = document.getElementById('newContactPhone').value;
+
+    if (name.trim() === "" || phone.trim() === "") {
+        alert("Please enter both name and number!");
+        return;
+    }
+
+    // Naya contact object
+    const newContact = {
+        name: name,
+        phone: phone,
+        img: 'https://ui-avatars.com/api/?name=' + name, // Dynamic avatar
+        stream: [] // Nayi chat history
+    };
+
+    // Global array mein add karna
+    targetGlobalContactsArray.push(newContact);
+
+    // Drawer band karein
+    document.getElementById('submoduleNewChatDrawer').style.display = 'none';
+    
+    // Inputs clear karein
+    document.getElementById('newContactName').value = "";
+    document.getElementById('newContactPhone').value = "";
+
+    // Refresh UI (Yahan aapka wo function hona chahiye jo contact list ko redraw karta hai)
+    // Agar aapka koi refresh function hai toh wo yahan call karein, 
+    // jaise: renderContactList();
+    alert("Chat added successfully!");
+}
+                    targetGlobalContactsArray[capturingTargetIndex].time = stamp;
+
+                    if(!isChatWindowOpen || compiledActiveContactIndexId !== capturingTargetIndex) {
+                        targetGlobalContactsArray[capturingTargetIndex].unreadCount += 1;
+                        renderMobileChatsListEngine(targetGlobalContactsArray);
+                    } else {
+                        rebuildCurrentChatHistoryCanvasWall();
+                    }
+                }, 2000);
+
+            }, 1000);
+        }
+
+        // ==========================================
+        // ⭐ INTERACTIVE STARRED MESSAGES LOGIC
+        // ==========================================
+        function triggerMessageActionPopDropdown(event, messageIndex) {
+            event.stopPropagation();
+            activeTrackedMessageTargetIndex = messageIndex;
+            
+            const starDrop = document.getElementById("messageContextStarDropdown");
+            const actionText = document.getElementById("starActionDropdownTextBtn");
+            const targetMsg = targetGlobalContactsArray[compiledActiveContactIndexId].stream[messageIndex];
+
+            if(targetMsg.isStarred) {
+                actionText.innerHTML = `<i class="bi bi-star text-secondary"></i> Unstar`;
+            } else {
+                actionText.innerHTML = `<i class="bi bi-star-fill text-warning"></i> Star`;
+            }
+
+            // Reposition dropdown overlay intelligently near cursor click point
+            starDrop.style.top = (event.clientY - 40) + "px";
+            starDrop.style.left = (event.clientX - 50) + "px";
+            starDrop.style.display = "block";
+        }
+
+        function executeToggleMessageStarTarget() {
+            if(activeTrackedMessageTargetIndex === null) return;
+            const targetMsg = targetGlobalContactsArray[compiledActiveContactIndexId].stream[activeTrackedMessageTargetIndex];
+            
+            targetMsg.isStarred = !targetMsg.isStarred;
+            rebuildCurrentChatHistoryCanvasWall();
+            document.getElementById("messageContextStarDropdown").style.display = "none";
+        }
+
+        function launchStarredMessagesGlobalViewer() {
+            const overlay = document.getElementById("submoduleStarredMessagesDrawer");
+            const targetSpace = document.getElementById("starredMessagesConsolidatedTarget");
+            targetSpace.innerHTML = "";
+
+            let starredCounter = 0;
+
+            targetGlobalContactsArray.forEach(contact => {
+                contact.stream.forEach(msg => {
+                    if(msg.isStarred) {
+                        starredCounter++;
+                        const nodeMarkup = `
+                            <div class="card p-2 border shadow-sm mb-2 bg-white" style="border-radius:6px; font-size:0.82rem;">
+                                <div class="d-flex justify-content-between align-items-center mb-1 text-success border-bottom pb-1" style="font-size:0.72rem; font-weight:bold;">
+                                    <span>From: ${contact.name}</span>
+                                    <span><i class="bi bi-star-fill text-warning"></i> Marked</span>
+                                </div>
+                                <div class="text-dark">${msg.text}</div>
+                                <small class="text-muted d-block text-end mt-1" style="font-size:0.62rem;">${msg.time}</small>
+                            </div>`;
+                        targetSpace.insertAdjacentHTML('beforeend', nodeMarkup);
+                    }
+                });
+            });
+
+            if(starredCounter === 0) {
+                targetSpace.innerHTML = `
+                    <div class="text-center bg-white p-4 m-3 rounded shadow-sm text-muted" style="font-size:0.85rem;">
+                        <i class="bi bi-star display-4 text-warning mb-2 d-block"></i>
+                        No starred messages found. Long click/tap message bubbles inside private chats to save them here.
+                    </div>`;
+            }
+
+            overlay.style.display = "flex";
+        }
+
+        // ==========================================
+        // 👥 DYNAMIC NEW GROUP STRUCTURAL ENGINES
+        // ==========================================
+        function openNewGroupCreationModal() {
+            const overlay = document.getElementById("submoduleNewGroupDrawer");
+            const listTarget = document.getElementById("groupTargetContactsCheckboxList");
+            listTarget.innerHTML = "";
+            document.getElementById("newGroupTitleInputField").value = "";
+
+            targetGlobalContactsArray.forEach((contact, idx) => {
+                const markup = `
+                    <div class="d-flex align-items-center justify-content-between border-bottom py-2 bg-white px-2 mb-1 rounded">
+                        <div class="d-flex align-items-center gap-2">
+                            <img src="${contact.img}" style="width:30px; height:30px; border-radius:50%;">
+                            <span class="small fw-bold text-dark">${contact.name}</span>
+                        </div>
+                        <input type="checkbox" value="${idx}" class="form-check-input group-select-checkbox-node">
+                    </div>`;
+                listTarget.insertAdjacentHTML('beforeend', markup);
+            });
+
+            overlay.style.display = "flex";
+        }
+
+        function executeCommitNewGroupCreationLogic() {
+            const groupNameInput = document.getElementById("newGroupTitleInputField").value.trim();
+            if(!groupNameInput) { alert("Please provide a valid group title."); return; }
+
+            const checkboxNodes = document.querySelectorAll(".group-select-checkbox-node:checked");
+            if(checkboxNodes.length === 0) { alert("Please select at least 1 contact participant."); return; }
+
+            const generatedId = "group_" + new Date().getTime();
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }).toLowerCase();
+
+            const newGroupNode = {
+                id: generatedId,
+                name: groupNameInput + " 👥",
+                img: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=100",
+                phone: `Group Engine - ${checkboxNodes.length + 1} Participants Active`,
+                phrase: "Group instantiated successfully.",
+                time: timeStr,
+                unreadCount: 0,
+                stream: [{ text: `System: You created group "${groupNameInput}"`, time: timeStr, isMe: true, tickState: 3, isStarred: false }]
+            };
+
+            // Unshift moves newly instantiated channel to absolute top row index position
+            targetGlobalContactsArray.unshift(newGroupNode);
+            renderMobileChatsListEngine(targetGlobalContactsArray);
+            
+            closeGenericSubmoduleView('submoduleNewGroupDrawer');
+            alert(`Group "${groupNameInput}" provisioned inside workspace matrix successfully!`);
+        }
+
+        // ==========================================
+        // 🌐 SUBMODULE SCREEN CONTROLLER TOGGLES
+        // ==========================================
+        function openNewBroadcastModal() { document.getElementById("submoduleNewBroadcastDrawer").style.display = "flex"; }
+        function launchWhatsAppWebSimulator() { document.getElementById("submoduleWhatsAppWebDrawer").style.display = "flex"; }
+        function openSettingsViewPanel() { document.getElementById("submoduleSettingsViewDrawer").style.display = "flex"; }
+        function closeGenericSubmoduleView(elementIdKey) { document.getElementById(elementIdKey).style.display = "none"; }
+
+        // 🛠️ NEW FUNCTIONS FOR NESTED INTERACTIVE INTERFACE NAVIGATION
+        function openNestedSettingsPanel(panelElementId) {
+            const nestedPanel = document.getElementById(panelElementId);
+            if (nestedPanel) {
+                nestedPanel.style.display = "flex";
+            }
+        }
+
+        function closeNestedSettingsPanel(panelElementId) {
+            const nestedPanel = document.getElementById(panelElementId);
+            if (nestedPanel) {
+                nestedPanel.style.display = "none";
+            }
+        }
+
+        // ==========================================
+        // 📎 ATTACHMENT FUNCTIONAL STREAMS
+        // ==========================================
+        function commitUploadedAttachmentFileToStream(inputSourceElement) {
+            const targetingFileObject = inputSourceElement.files[0];
+            if(!targetingFileObject) return;
+
+            const readerInstance = new FileReader();
+            const stamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }).toLowerCase();
+
+            if (targetingFileObject.type.startsWith('image/')) {
+                readerInstance.onload = function(e) {
+                    const inlinePhotoMarkup = `<img src="${e.target.result}" style="width:100%; max-height:160px; object-fit:cover; display:block; border-radius:4px; cursor:pointer;" class="mt-1" onclick="window.open('${e.target.result}')">`;
+                    targetGlobalContactsArray[compiledActiveContactIndexId].stream.push({ text: inlinePhotoMarkup, time: stamp, isMe: true, tickState: 1, isStarred: false });
+                    rebuildCurrentChatHistoryCanvasWall();
+                    triggerPostSendTickUpgrades();
+                };
+                readerInstance.readAsDataURL(targetingFileObject);
+            } else {
+                readerInstance.onload = function(e) {
+                    const encodedDataUrlBlobString = e.target.result;
+                    const docTemplateMarkup = `
+                        <a href="${encodedDataUrlBlobString}" download="${targetingFileObject.name}" class="text-decoration-none d-block card bg-light border p-2 text-dark mt-1" style="font-size:0.82rem; cursor:pointer;">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-file-earmark-text-fill text-primary fs-3"></i>
+                                <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:120px;">
+                                    <strong class="d-block text-truncate" style="font-size:0.8rem;">${targetingFileObject.name}</strong>
+                                    <small class="text-muted" style="font-size:0.68rem;">Click to download/open</small>
+                                </div>
+                                <i class="bi bi-download ms-auto text-success fs-5"></i>
+                            </div>
+                        </a>`;
+                    
+                    targetGlobalContactsArray[compiledActiveContactIndexId].stream.push({ text: docTemplateMarkup, time: stamp, isMe: true, tickState: 1, isStarred: false });
+                    rebuildCurrentChatHistoryCanvasWall();
+                    triggerPostSendTickUpgrades();
+                };
+                readerInstance.readAsDataURL(targetingFileObject);
+            }
+            inputSourceElement.value = "";
+        }
+
+        function triggerPostSendTickUpgrades() {
+            const streamRef = targetGlobalContactsArray[compiledActiveContactIndexId].stream;
+            const targetPointer = streamRef.length - 1;
+            setTimeout(() => { if(streamRef[targetPointer]) { streamRef[targetPointer].tickState = 2; rebuildCurrentChatHistoryCanvasWall(); } }, 800);
+            setTimeout(() => { 
+                if(streamRef[targetPointer]) { streamRef[targetPointer].tickState = 3; rebuildCurrentChatHistoryCanvasWall(); } 
+                triggerControlledSingleResponse();
+            }, 1800);
+        }
+
+        // ==========================================
+        // 🎙️ VOICE MESSAGES SYNTHESIZER
+        // ==========================================
+        function toggleVoiceMessageRecordingSession() {
+            const textInput = document.getElementById("chatInputFieldElement");
+            const dockNode = document.getElementById("recordingActiveStateDockNode");
+            const glyph = document.getElementById("footerActionGlyphIcon");
+            const timerLabel = document.getElementById("recordingLiveTimerNode");
+
+            if (!isRecordingModeActive) {
+                isRecordingModeActive = true;
+                textInput.style.display = "none";
+                dockNode.style.display = "flex";
+                glyph.className = "bi bi-stop-fill text-white";
+                
+                recordingSecondsCounter = 0;
+                timerLabel.innerText = "Recording... 00:00";
+                recordingTimerIntervalObject = setInterval(() => {
+                    recordingSecondsCounter++;
+                    let m = String(Math.floor(recordingSecondsCounter / 60)).padStart(2, '0');
+                    let s = String(recordingSecondsCounter % 60).padStart(2, '0');
+                    timerLabel.innerText = `Recording... ${m}:${s}`;
+                }, 1000);
+            } else {
+                isRecordingModeActive = false;
+                clearInterval(recordingTimerIntervalObject);
+                textInput.style.display = "block";
+                dockNode.style.display = "none";
+                glyph.className = "bi bi-mic-fill text-white";
+
+                let m = String(Math.floor(recordingSecondsCounter / 60)).padStart(2, '0');
+                let s = String(recordingSecondsCounter % 60).padStart(2, '0');
+                
+                const uniquePlayerIdHash = "audio_" + new Date().getTime();
+                const waveAudioMarkup = `
+                    <div class="wa-audio-player-node-container" id="${uniquePlayerIdHash}">
+                        <i class="bi bi-play-fill wa-audio-play-trigger-btn" onclick="executeAudioHardwareSynthesizerPipeline('${uniquePlayerIdHash}')"></i>
+                        <div class="wa-audio-wave-bar-track">
+                            <div class="wa-audio-wave-fill-progress"></div>
+                        </div>
+                        <small class="text-muted small">${m}:${s}</small>
+                    </div>`;
+
+                const stamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }).toLowerCase();
+                targetGlobalContactsArray[compiledActiveContactIndexId].stream.push({ text: waveAudioMarkup, time: stamp, isMe: true, tickState: 1, isStarred: false });
+                rebuildCurrentChatHistoryCanvasWall();
+                triggerPostSendTickUpgrades();
+            }
+        }
+
+        function executeAudioHardwareSynthesizerPipeline(playerIdKeyString) {
+            const basePlayerNode = document.getElementById(playerIdKeyString);
+            if(!basePlayerNode) return;
+
+            const playBtn = basePlayerNode.querySelector('.wa-audio-play-trigger-btn');
+            const progressFill = basePlayerNode.querySelector('.wa-audio-wave-fill-progress');
+
+            if(playBtn.classList.contains('bi-play-fill')) {
+                playBtn.className = "bi bi-pause-fill wa-audio-play-trigger-btn text-danger";
+                progressFill.style.width = "100%";
+                progressFill.style.transition = "width 3.5s linear";
+
+                try {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    audioContextEngineReference = new AudioContext();
+                    const oscillatorNode = audioContextEngineReference.createOscillator();
+                    const gainNode = audioContextEngineReference.createGain();
+                    
+                    oscillatorNode.type = 'sine'; oscillatorNode.frequency.setValueAtTime(320, audioContextEngineReference.currentTime); 
+                    gainNode.gain.setValueAtTime(0.12, audioContextEngineReference.currentTime); 
+                    
+                    oscillatorNode.connect(gainNode); gainNode.connect(audioContextEngineReference.destination);
+                    oscillatorNode.start(); oscillatorNode.stop(audioContextEngineReference.currentTime + 3.2);
+                } catch(e) { console.log(e); }
+
+                setTimeout(() => {
+                    playBtn.className = "bi bi-play-fill wa-audio-play-trigger-btn";
+                    progressFill.style.transition = "none"; progressFill.style.width = "0%";
+                    if(audioContextEngineReference) audioContextEngineReference.close();
+                }, 3500);
+            } else {
+                playBtn.className = "bi bi-play-fill wa-audio-play-trigger-btn";
+                progressFill.style.transition = "none"; progressFill.style.width = "0%";
+                if(audioContextEngineReference) audioContextEngineReference.close();
+            }
+        }
+
+        // ==========================================
+        // 📷 REAL HARDWARE CAMERA ENGINE 
+        // ==========================================
+        function triggerHardwareCameraOverlay(openViewfinderFlag) {
+            const overlay = document.getElementById("appHardwareCameraOverlayLayer");
+            const videoElement = document.getElementById("hardwareLiveVideoElement");
+
+            if (openViewfinderFlag) {
+                overlay.style.display = "flex";
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(stream => {
+                        cameraStreamObjectReference = stream;
+                        videoElement.style.display = "block";
+                        videoElement.srcObject = stream;
+                    }).catch(err => {
+                        console.log("Using dynamic mock frame layer layout system configuration context:", err);
+                        videoElement.style.display = "none";
+                    });
+            } else {
+                terminateLiveCameraHardwareStream(); 
+                overlay.style.display = "none";
+            }
+        }
+
+        function terminateLiveCameraHardwareStream() {
+            if (cameraStreamObjectReference) {
+                cameraStreamObjectReference.getTracks().forEach(track => track.stop());
+                cameraStreamObjectReference = null;
+            }
+        }
+
+        function commitHardwareCapturedPhotoPipeline() {
+            const videoElement = document.getElementById("hardwareLiveVideoElement");
+            const canvasElement = document.getElementById("hardwareHiddenFrameCanvasAsset");
+            let imageSourcePath = "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=300"; 
+
+            const ctx = canvasElement.getContext('2d');
+            canvasElement.width = 320;
+            canvasElement.height = 240;
+
+            if (cameraStreamObjectReference && videoElement.style.display !== "none") {
+                ctx.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+                imageSourcePath = canvasElement.toDataURL('image/png');
+            } else {
+                ctx.fillStyle = "#075E54";
+                ctx.fillRect(0, 0, canvasElement.width, canvasElement.height);
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 14px Roboto";
+                ctx.fillText("📷 Captured Photo Asset Frame", 30, 110);
+                ctx.font = "11px Roboto";
+                ctx.fillStyle = "rgba(255,255,255,0.7)";
+                ctx.fillText("Simulated Media Stream Framework", 30, 135);
+                imageSourcePath = canvasElement.toDataURL('image/png');
+            }
+
+            const stamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }).toLowerCase();
+            const compiledPhotoMarkup = `<img src="${imageSourcePath}" style="width:100%; max-height:160px; object-fit:cover; display:block; border-radius:4px; cursor:pointer;" class="mt-1" onclick="window.open('${imageSourcePath}')">`;
+            
+            targetGlobalContactsArray[compiledActiveContactIndexId].stream.push({ text: compiledPhotoMarkup, time: stamp, isMe: true, tickState: 1, isStarred: false });
+            rebuildCurrentChatHistoryCanvasWall();
+            triggerPostSendTickUpgrades();
+            triggerHardwareCameraOverlay(false);
+        }
+
+        // ==========================================
+        // 📞 REAL DYNAMIC VIDEO/VOICE CALLS 
+        // ==========================================
+        function triggerOutgoingCallSystem(callTypeString) {
+            const currentContact = targetGlobalContactsArray[compiledActiveContactIndexId];
+            const callOverlay = document.getElementById("appActiveCallOverlayScreen");
+            const durationLabel = document.getElementById("callDurationTickerString");
+            
+            const remoteVideo = document.getElementById("appCallRemoteVideoTrack");
+            const localPip = document.getElementById("appCallLocalPipFrame");
+            const localVideo = document.getElementById("appCallLocalVideoTrack");
+            const avatarBox = document.getElementById("callScreenAvatarCentralBox");
+
+            document.getElementById("callScreenTypeNameLabel").innerText = `WhatsApp ${callTypeString}`;
+            document.getElementById("callScreenProfileNameTarget").innerText = currentContact.name;
+            document.getElementById("callScreenProfilePicTarget").src = currentContact.img;
+            
+            callOverlay.style.display = "flex";
+            callSecondsCounter = 0;
+            durationLabel.innerText = "Ringing...";
+            durationLabel.classList.add("blink-animation");
+
+            remoteVideo.style.display = "none";
+            localPip.style.display = "none";
+            avatarBox.style.display = "block";
+
+            if(callTypeString === "Video Call") {
+                navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+                    .then(stream => {
+                        callingStreamObjectReference = stream;
+                        avatarBox.style.display = "none";
+                        remoteVideo.style.display = "block";
+                        localPip.style.display = "block";
+                        
+                        localVideo.srcObject = stream;
+                        remoteVideo.poster = currentContact.img; 
+                    }).catch(err => {
+                        console.log("Video track stream failure mapping:", err);
+                    });
+            }
+
+            activeCallTimerIntervalObject = setInterval(() => {
+                callSecondsCounter++;
+                if (callSecondsCounter > 2) {
+                    durationLabel.classList.remove("blink-animation");
+                    let activeCallDuration = callSecondsCounter - 2;
+                    let m = String(Math.floor(activeCallDuration / 60)).padStart(2, '0');
+                    let s = String(activeCallDuration % 60).padStart(2, '0');
+                    durationLabel.innerText = `${m}:${s}`;
+                }
+            }, 1000);
+        }
+
+        function terminateActiveCallSessionPipeline() {
+            if(activeCallTimerIntervalObject) { clearInterval(activeCallTimerIntervalObject); activeCallTimerIntervalObject = null; }
+            if (callingStreamObjectReference) {
+                callingStreamObjectReference.getTracks().forEach(track => track.stop());
+                callingStreamObjectReference = null;
+            }
+            document.getElementById("appActiveCallOverlayScreen").style.display = "none";
+        }
+     
+
+        // ==========================================
+        // ⚖️ INTERFACE UTILITY DROPDOWNS
+        // ==========================================
+        function togglePrivateDropdownMenu(event) {
+            event.stopPropagation();
+            const el = document.getElementById("privateChatContextDropdown");
+            el.style.display = (el.style.display === "block") ? "none" : "block";
+        }
+
+        function executeClearChatHistoryEngine() {
+            targetGlobalContactsArray[compiledActiveContactIndexId].stream = [];
+            rebuildCurrentChatHistoryCanvasWall();
+            document.getElementById("privateChatContextDropdown").style.display = "none";
+        }
+
+        function launchContactMetadataInfoDrawer() {
+            const node = targetGlobalContactsArray[compiledActiveContactIndexId];
+            document.getElementById("targetLargeDrawerProfileTitleLabel").innerText = node.name;
+            document.getElementById("targetLargeDrawerProfileAvatarPic").src = node.img;
+            document.getElementById("targetLargeDrawerPhoneStringNode").innerText = node.phone;
+            document.getElementById("appContactProfileInfoDrawerWindow").classList.add("open");
+            if(document.getElementById("privateChatContextDropdown")) document.getElementById("privateChatContextDropdown").style.display = "none";
+        }
+
+        function dismissContactMetadataInfoDrawer() {
+            document.getElementById("appContactProfileInfoDrawerWindow").classList.remove("open");
+        }
+
+        function toggleEmojiKeyboardPanel() {
+            const panel = document.getElementById("appEmojiTrayContainer");
+            panel.style.display = (panel.style.display === "grid") ? "none" : "grid";
+        }
+
+        function appendEmojiToInputField(emojiGlyphChar) {
+            const field = document.getElementById("chatInputFieldElement");
+            field.value += emojiGlyphChar; toggleInputActionButtonState(field.value); field.focus();
+        }
+
+        function openStatusDrawer() {
+    document.getElementById('submoduleStatusDrawer').style.display = "flex";
+}
+
+function closeGenericSubmoduleView(id) {
+    document.getElementById(id).style.display = "none";
+}
+
+function openStatusDrawer() {
+    document.getElementById('submoduleStatusDrawer').style.display = "flex";
+}
+
+function openStatusDrawer() {
+    document.getElementById("submoduleStatusDrawer").style.display = "flex";
+}
+
+function closeStatusDrawer() {
+    document.getElementById("submoduleStatusDrawer").style.display = "none";
+}
+
+function postStatus() {
+    let input = document.getElementById("statusInput");
+    let list = document.getElementById("statusList");
+    
+    if (input.value.trim() === "") {
+        alert("Please write something!");
+        return;
+    }
+
+    let div = document.createElement("div");
+    div.className = "p-3 border-bottom";
+    div.innerHTML = `<strong>You:</strong><br><small>${input.value}</small>`;
+    
+    list.prepend(div); // Naya status upar aayega
+    input.value = ""; // Input clear
+}
+
+
+// Status Logic
+function postStatus() {
+    let input = document.getElementById("statusInput");
+    let list = document.getElementById("statusList");
+    if(input.value.trim() !== "") {
+        let div = document.createElement("div");
+        div.className = "p-2 border-bottom";
+        div.innerHTML = `<strong>You:</strong><br>${input.value}`;
+        list.prepend(div);
+        input.value = "";
+    }
+}
+
+// New Chat Logic
+function addNewContact() {
+    const name = document.getElementById('newName').value;
+    const phone = document.getElementById('newPhone').value;
+    if (name && phone) {
+        targetGlobalContactsArray.push({ name: name, phone: phone, img: 'https://ui-avatars.com/api/?name=' + name, stream: [] });
+        document.getElementById('submoduleNewChatDrawer').style.display = 'none';
+        alert("Contact Added!");
+        // Note: Agar aapki list refresh nahi ho rahi, to yahan apna refresh function call karein
+    }
+}
+    </script>
+}
