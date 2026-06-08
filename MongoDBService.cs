@@ -1,4 +1,3 @@
-﻿using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using real_time_chat.Models;
 
@@ -10,10 +9,11 @@ namespace real_time_chat.Services
 
         public MongoDbService(IConfiguration configuration)
         {
-            var client = new MongoClient(configuration.GetConnectionString("MongoDbConnection"));
-            _database = client.GetDatabase("ChatAppDB");
+            var client = new MongoClient(configuration.GetConnectionString("MongoDb"));
+            _database = client.GetDatabase(configuration["DatabaseSettings:DatabaseName"]);
         }
 
         public IMongoCollection<User> Users => _database.GetCollection<User>("Users");
+        public IMongoCollection<Message> Messages => _database.GetCollection<Message>("Messages");
     }
 }
