@@ -235,9 +235,14 @@ This project is licensed under the [MIT License](LICENSE).
 
 
 **[Your Name]**
-📧 Email: your@email.com
+📧 Email: amnarazabc6@gmail.com
 🌐 GitHub: [@Amna Raza](https://github.com/AmnaMAIR)
+
+📧 Email: amnagul048@gmail.com
 🌐 GitHub: [@Amna Gul](https://github.com/Amnagul048)
+
+
+📧 Email: mehwishsatti64@gmail.com
 🌐 GitHub: [@Mehwish Rauf](https://github.com/Mehwishrauf)
 ---
 
