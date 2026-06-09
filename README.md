@@ -1,1 +1,244 @@
-# WHATSAPPCLONE
+# 💬 Real-Time Chat Application
+
+A real-time chat application built with **ASP.NET MVC (.NET 8)**, using **MongoDB** as the database and **Docker** for containerization.
+
+---
+
+## 🚀 Features
+
+- **Real-Time Messaging** — Instant message delivery via SignalR
+- **User Authentication** — Secure login and signup system
+- **Private & Group Chat** — One-on-one and group conversations
+- **Online Status Indicator** — See who is online in real-time
+- **Message History** — All conversations saved in MongoDB
+- **Typing Indicator** — Shows when someone is typing
+- **Responsive UI** — Works on both mobile and desktop
+- **Dockerized** — Run the entire app with a single command
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Framework | ASP.NET Core MVC (.NET 8) |
+| Real-Time | SignalR |
+| Database | MongoDB |
+| ODM | MongoDB.Driver (C#) |
+| Frontend | Razor Views + Bootstrap + JavaScript |
+| Containerization | Docker + Docker Compose |
+| IDE | Visual Studio 2022 |
+
+---
+
+## 📁 Project Structure
+
+```
+RealTimeChat/
+├── Controllers/
+│   ├── HomeController.cs        # Main pages
+│   ├── AccountController.cs     # Login / Signup
+│   └── ChatController.cs        # Chat logic
+├── Models/
+│   ├── User.cs                  # User model
+│   ├── Message.cs               # Message model
+│   └── ChatRoom.cs              # Room model
+├── Views/
+│   ├── Home/
+│   ├── Account/
+│   │   ├── Login.cshtml
+│   │   └── Register.cshtml
+│   └── Chat/
+│       └── Index.cshtml         # Main chat UI
+├── Hubs/
+│   └── ChatHub.cs               # SignalR Hub
+├── Services/
+│   ├── MongoDbService.cs        # MongoDB connection
+│   ├── UserService.cs
+│   └── MessageService.cs
+├── wwwroot/
+│   ├── css/
+│   └── js/
+│       └── chat.js              # Frontend SignalR client
+├── appsettings.json
+├── appsettings.Development.json
+├── Program.cs
+├── Dockerfile
+├── docker-compose.yml
+└── README.md
+```
+
+---
+
+## ⚙️ Prerequisites
+
+- [Visual Studio 2022](https://visualstudio.microsoft.com/) with ASP.NET workload
+- [.NET 8 SDK](https://dotnet.microsoft.com/download)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [MongoDB Compass](https://www.mongodb.com/products/compass) *(optional — for database GUI)*
+
+---
+
+## 🔧 Configuration
+
+Update `appsettings.json` with your settings:
+
+```json
+{
+  "MongoDB": {
+    "ConnectionString": "mongodb://mongo:27017",
+    "DatabaseName": "ChatApp"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information"
+    }
+  }
+}
+```
+
+> ⚠️ For local development use `mongodb://localhost:27017`
+> For Docker use `mongodb://mongo:27017` (matches the Docker service name)
+
+---
+
+## 🐳 Running with Docker
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/RealTimeChat.git
+cd RealTimeChat
+```
+
+### 2. Start with Docker Compose
+
+```bash
+docker-compose up --build
+```
+
+### 3. Open in Browser
+
+```
+http://localhost:8080
+```
+
+---
+
+### 📄 docker-compose.yml
+
+```yaml
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - MongoDB__ConnectionString=mongodb://mongo:27017
+      - MongoDB__DatabaseName=RealTimeChatDB
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:7.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
+```
+
+---
+
+### 📄 Dockerfile
+
+```dockerfile
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 8080
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY ["RealTimeChat.csproj", "."]
+RUN dotnet restore
+COPY . .
+RUN dotnet build -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "RealTimeChat.dll"]
+```
+
+---
+
+## 💻 Running in Visual Studio (Without Docker)
+
+1. Open the solution in **Visual Studio 2022**
+2. Install MongoDB locally or use **MongoDB Atlas**
+3. Update the connection string in `appsettings.json`:
+   ```json
+   "ConnectionString": "mongodb://localhost:27017"
+   ```
+4. Press the **Run** button or hit `F5`
+5. The browser will open automatically
+
+---
+
+## 🔌 SignalR Hub Events
+
+| Event | Direction | Description |
+|-------|-----------|-------------|
+| `SendMessage` | Client → Server | Send a message |
+| `ReceiveMessage` | Server → Client | Receive a message |
+| `JoinRoom` | Client → Server | Join a chat room |
+| `UserConnected` | Server → Client | A user came online |
+| `UserDisconnected` | Server → Client | A user went offline |
+| `UserTyping` | Client → Server | Typing indicator trigger |
+
+---
+
+## 🗃️ MongoDB Collections
+
+| Collection | Description |
+|------------|-------------|
+| `users` | User accounts (name, email, password hash) |
+| `messages` | All messages (sender, room, content, timestamp) |
+| `chatrooms` | Room info and members list |
+
+---
+
+## 🤝 Contributing
+
+1. Fork this repository
+2. Create a new branch: `git checkout -b feature/your-feature`
+3. Commit your changes: `git commit -m "Add your feature"`
+4. Push to the branch: `git push origin feature/your-feature`
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+
+
+**[Your Name]**
+📧 Email: your@email.com
+🌐 GitHub: [@Amna Raza](https://github.com/AmnaMAIR)
+🌐 GitHub: [@Amna Gul](https://github.com/Amnagul048)
+🌐 GitHub: [@Mehwish Rauf](https://github.com/Mehwishrauf)
+---
+
+
